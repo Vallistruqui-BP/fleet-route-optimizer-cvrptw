@@ -1,8 +1,16 @@
 <div align="center">
-  <img src="assets/logo.png" alt="Fleet Route Optimizer Logo" width="350px"/>
+  <img src="assets/logo.png" alt="Fleet Route Optimizer Logo" width="400px"/>
 </div>
 
 <h1 align="center"> Fleet Route Optimizer [CVRPTW]</h1>
+
+<div align="center">
+
+[![Donate with PayPal](https://img.shields.io/badge/Donate-PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://www.paypal.com/donate/?hosted_button_id=9CSNUCM9FX53S)
+
+**💙 Support this project! If you find it useful, consider buying me a coffee ☕**
+
+</div>
 
 <div align="center">
 
