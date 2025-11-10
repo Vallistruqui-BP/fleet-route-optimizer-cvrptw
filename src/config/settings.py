@@ -40,6 +40,9 @@ class Settings(BaseSettings):
         description="Log format string"
     )
     
+    # Security Settings
+    api_key: Optional[str] = Field(None, description="API authentication key (optional)")
+    
     # File paths
     inputs_dir: str = Field("inputs", description="Input files directory")
     results_dir: str = Field("results", description="Results output directory")

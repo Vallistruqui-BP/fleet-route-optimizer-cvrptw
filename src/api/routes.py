@@ -6,12 +6,13 @@ import asyncio
 import logging
 import zipfile
 from io import BytesIO
-from fastapi import APIRouter, HTTPException, Body, Query
+from fastapi import APIRouter, HTTPException, Body, Query, Depends
 from fastapi.responses import StreamingResponse, Response
 
 from ..models.api import SolveRequest, SolveResponse, HealthResponse, SolverConfig
 from ..services import SolverService
 from ..config import get_logger
+from .dependencies import verify_api_key
 
 logger = get_logger(__name__)
 router = APIRouter()
@@ -39,10 +40,13 @@ async def solve_endpoint(
     solver: str = Query("ortools", description="Solver type: 'ortools' or 'gurobi'"),
     vehicle_penalty_weight: float = Query(None, description="Weight for minimizing vehicles"),
     distance_weight: float = Query(1.0, description="Weight for distance minimization"),
-    mip_gap: float = Query(0.01, description="MIP optimality gap for Gurobi")
+    mip_gap: float = Query(0.01, description="MIP optimality gap for Gurobi"),
+    _: None = Depends(verify_api_key)
 ):
     """
     Solve a CVRPTW problem from JSON payload.
+
+    Requires authentication if API_KEY environment variable is set.
     
     Query parameters:
     - time_limit: Time limit in seconds (default 60)
@@ -92,10 +96,13 @@ async def solve_stream_endpoint(
     solver: str = Query("ortools", description="Solver type: 'ortools' or 'gurobi'"),
     vehicle_penalty_weight: float = Query(None, description="Weight for minimizing vehicles"),
     distance_weight: float = Query(1.0, description="Weight for distance minimization"),
-    mip_gap: float = Query(0.01, description="MIP optimality gap for Gurobi")
+    mip_gap: float = Query(0.01, description="MIP optimality gap for Gurobi"),
+    _: None = Depends(verify_api_key)
 ):
     """
     Solve a CVRPTW problem with Server-Sent Events (SSE) streaming of logs.
+
+    Requires authentication if API_KEY environment variable is set.
     
     Query parameters:
     - time_limit: Time limit in seconds (default 60)

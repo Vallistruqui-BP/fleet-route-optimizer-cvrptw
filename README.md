@@ -206,6 +206,14 @@ npm start
 - API Docs (Swagger): http://localhost:8000/docs
 - API Docs (ReDoc): http://localhost:8000/redoc
 
+8. **(Optional) Enable API Authentication**:
+```bash
+# Edit .env file and set API_KEY
+API_KEY=your-secret-key-here
+
+# Restart API server
+```
+
 ## 📚 API Endpoints
 
 ### 1. Health Check
@@ -281,6 +289,62 @@ GET /download-examples
 Response: ZIP file with CVRPTW_SMALL.json, CVRPTW_MEDIUM.json, CVRPTW_LARGE.json
 ```
 
+### 🔐 API Authentication
+
+The API supports optional API key authentication. When enabled, all protected endpoints require an `api-key` header.
+
+**Enable Authentication:**
+
+Set the `API_KEY` environment variable in your `.env` file:
+
+```bash
+API_KEY=your-secret-key-here
+```
+
+**Making Authenticated Requests:**
+
+```bash
+# Using curl
+curl -X POST "http://localhost:8000/solve?solver=ortools" \
+  -H "api-key: your-secret-key-here" \
+  -H "Content-Type: application/json" \
+  -d @inputs/CVRPTW_SMALL.json
+
+# Using JavaScript fetch
+fetch('http://localhost:8000/solve?solver=ortools', {
+  method: 'POST',
+  headers: {
+    'api-key': 'your-secret-key-here',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(problemData)
+})
+
+# Using Python requests
+import requests
+
+headers = {
+    'api-key': 'your-secret-key-here',
+    'Content-Type': 'application/json'
+}
+
+response = requests.post(
+    'http://localhost:8000/solve?solver=ortools',
+    json=problem_data,
+    headers=headers
+)
+```
+
+**Protected Endpoints:**
+- `POST /solve` - Requires authentication
+- `POST /solve-stream` - Requires authentication
+
+**Public Endpoints:**
+- `GET /health` - No authentication required
+- `GET /download-examples` - No authentication required
+
+**Note:** If `API_KEY` is not set, authentication is disabled and all endpoints are publicly accessible.
+
 ### Query Parameters
 
 | Parameter | Type | Default | Description |
@@ -301,6 +365,7 @@ Configuration is managed through environment variables (`.env` file) or `src/con
 | `API_HOST` | 127.0.0.1 | API server host |
 | `API_PORT` | 8000 | API server port |
 | `DEBUG` | false | Debug mode |
+| `API_KEY` | (empty) | API authentication key (optional) |
 | `DEFAULT_SOLVER` | ortools | Default solver (ortools/gurobi) |
 | `ORTOOLS_VEHICLE_PENALTY` | 100000.0 | OR-Tools vehicle penalty weight |
 | `GUROBI_VEHICLE_PENALTY` | 1000.0 | Gurobi vehicle penalty weight |
