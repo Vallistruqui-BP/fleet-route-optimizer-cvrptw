@@ -6,6 +6,8 @@ services:
       context: ..
       dockerfile: Dockerfile
     container_name: cvrptw-solver-backend
+    # 👇 NUEVO: usar el entrypoint correcto
+    command: python -m src.app
     ports:
       - "8000:8000"
     volumes:
@@ -17,6 +19,9 @@ services:
       - ../inputs:/app/inputs
     environment:
       - PYTHONUNBUFFERED=1
+      # 👇 MUY recomendable en Docker, para que escuche en todas las interfaces
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
